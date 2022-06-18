@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Req, Res } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Body, Controller, Get, Post, Res } from '@nestjs/common';
+import { Response } from 'express';
+import { CreateUserDto } from 'src/core/dtos/CreateUserDto';
 import { UserService } from '../services/user.service';
 
 @Controller('user')
@@ -12,10 +13,11 @@ export class UserController {
   }
 
   @Post('create')
-  async createUser(@Req() request: Request, @Res() response: Response) {
-    const { email, password, name, username } = request.body;
-
-    const foundByEmail = await this.appService.findByEmail(email);
+  async createUser(
+    @Body() createUserDto: CreateUserDto,
+    @Res() response: Response,
+  ) {
+    const foundByEmail = await this.appService.findByEmail(createUserDto.email);
 
     if (!!foundByEmail) {
       return response
@@ -23,7 +25,9 @@ export class UserController {
         .json({ message: 'This e-mail already exists!' });
     }
 
-    const foundByUsername = await this.appService.findByUsername(username);
+    const foundByUsername = await this.appService.findByUsername(
+      createUserDto.username,
+    );
 
     if (!!foundByUsername) {
       return response
@@ -31,7 +35,7 @@ export class UserController {
         .json({ message: 'This username already exists!' });
     }
 
-    await this.appService.createUser({ email, password, name, username });
+    await this.appService.createUser(createUserDto);
     return response.status(201).json({ message: 'User has been created!' });
   }
 }
