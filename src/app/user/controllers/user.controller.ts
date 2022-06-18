@@ -30,7 +30,7 @@ export class UserController {
     return;
   }
 
-  @Post('create')
+  @Post('create-user')
   async createUser(@Body() createUserDto: CreateUserDto) {
     const foundByUsername = await this.appService.findByUsername(
       createUserDto.username,
