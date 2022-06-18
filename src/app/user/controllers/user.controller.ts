@@ -1,5 +1,10 @@
-import { Body, Controller, Get, Post, Res } from '@nestjs/common';
-import { Response } from 'express';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Post,
+} from '@nestjs/common';
 import { CreateUserDto } from 'src/core/dtos/CreateUserDto';
 import { UserService } from '../services/user.service';
 
@@ -13,16 +18,11 @@ export class UserController {
   }
 
   @Post('create')
-  async createUser(
-    @Body() createUserDto: CreateUserDto,
-    @Res() response: Response,
-  ) {
+  async createUser(@Body() createUserDto: CreateUserDto) {
     const foundByEmail = await this.appService.findByEmail(createUserDto.email);
 
     if (!!foundByEmail) {
-      return response
-        .status(400)
-        .json({ message: 'This e-mail already exists!' });
+      throw new BadRequestException('This e-mail already exists!');
     }
 
     const foundByUsername = await this.appService.findByUsername(
@@ -30,12 +30,10 @@ export class UserController {
     );
 
     if (!!foundByUsername) {
-      return response
-        .status(400)
-        .json({ message: 'This username already exists!' });
+      throw new BadRequestException('This username already exists!');
     }
 
     await this.appService.createUser(createUserDto);
-    return response.status(201).json({ message: 'User has been created!' });
+    return 'User has been created!';
   }
 }
