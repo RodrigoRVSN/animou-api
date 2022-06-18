@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+enum Status {
+  ACCEPTED
+  IN_PROGRESS
+  NONE
+}
+
+model User {
+  id  String @id @default(uuid())
+  name String
+  username String @unique
+  email String @unique
+  password String
+  avatar_url String?
+  experience Int @default(0)
+  level Int @default(0)
+  friends_count Int @default(0)
+  posts_count Int @default(0)
+
+  friends Friend[]
+}
+
+model Friend {
+  id  String @id @default(uuid())
+  status Status @default(NONE)
+
+  user User? @relation(fields: [user_id], references: [id])
+  user_id String?
+}
