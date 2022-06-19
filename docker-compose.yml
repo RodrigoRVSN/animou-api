@@ -1,0 +1,21 @@
+version: '3.7'
+services:
+  database:
+    platform: linux/x86_64
+    image: mysql:5.7
+    container_name: database_animou
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_DATABASE=animou
+      - MYSQL_USER=animou
+      - MYSQL_PASSWORD=animou
+      - MYSQL_ROOT_PASSWORD=animou
+    volumes:
+      - my-db:/var/lib/mysql
+
+volumes:
+  node_modules: {}
+  my-db: 
+    driver: local
