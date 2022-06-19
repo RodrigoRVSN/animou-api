@@ -5,7 +5,9 @@ import {
   Get,
   HttpCode,
   Post,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/app/auth/jwt-auth.guard';
 import { CreateUserDto, ValidateEmailDto } from '../dtos';
 import { UserService } from '../services/user.service';
 
@@ -14,6 +16,7 @@ export class UserController {
   constructor(private readonly appService: UserService) {}
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   getUsers() {
     return this.appService.getUsers();
   }
